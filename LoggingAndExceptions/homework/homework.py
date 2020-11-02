@@ -35,7 +35,7 @@ def make_concert(visitors_num):
     in case if caught - log error to console and return False, in case of successful initialization - return True
     """
     try:
-        a = Concert(9)
+        a = Concert(visitors_num)
     except TooManyVisitors as e:
         print(e)
         return False
