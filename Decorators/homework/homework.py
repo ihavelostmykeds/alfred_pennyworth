@@ -1,15 +1,17 @@
+import logging
 # 1. double_result
 # This decorator function should return the result of another function multiplied by two
 def double_result(func):
-    # return function result multiplied by two
-    pass
+    def func_wrapper(a,b):
+        return func(a,b) * 2
+    return func_wrapper
 
 
 def add(a, b):
     return a + b
 
-
-add(5, 5)  # 10
+print('task 1')
+print(f'add(5, 5): {add(5, 5)}')
 
 
 @double_result
@@ -17,7 +19,7 @@ def add(a, b):
     return a + b
 
 
-add(5, 5)  # 20
+print(f'add(5, 5): {add(5, 5)}')  # 20
 
 
 # 2. only_even_parameters
@@ -26,16 +28,20 @@ add(5, 5)  # 20
 
 def only_even_parameters(func):
     # if args passed to func are not even - return "Please only use even numbers!"
-    pass
-
+    def wrap(*args):
+        for argument in args:
+            if argument % 2 == 0:
+                return func(*args)
+            return "Please only use even numbers!"
+    return wrap
 
 @only_even_parameters
 def add(a, b):
     return a + b
 
-
-add(5, 5)  # "Please add even numbers!"
-add(4, 4)  # 8
+print('task 2')
+print(add(4, 8))  # "Please add even numbers!"
+print(add(4, 4))  # 8
 
 
 @only_even_parameters
@@ -50,15 +56,19 @@ def multiply(a, b, c, d, e):
 
 def logged(func):
     # log function arguments and its return value
-    pass
+    def wrapper(*args, **kwargs):
+        logging.error(f'args:{args}, kwargs:{kwargs}')
+        logging.error(func(*args,**kwargs))
+        return func(*args,**kwargs)
+    return wrapper
 
 
 @logged
 def func(*args):
     return 3 + len(args)
 
-
-func(4, 4, 4)
+print('task 3')
+print(func(4, 4, 4))
 
 
 # you called func(4, 4, 4)
@@ -71,15 +81,21 @@ func(4, 4, 4)
 # If it is wrong, it should print("Bad Type"), otherwise function should be executed.
 
 def type_check(correct_type):
-    # put code here
-    pass
+    def type_check_decorator(func):
+        def func_wrapper(my_type):
+            if isinstance(my_type, correct_type):
+                return func(my_type)
+            return 'Bad type'
+        return func_wrapper
+    return type_check_decorator
+
 
 
 @type_check(int)
 def times2(num):
     return num * 2
 
-
+print('task 4')
 print(times2(2))
 times2('Not A Number')  # "Bad Type" should be printed, since non-int passed to decorated function
 
